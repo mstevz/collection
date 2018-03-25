@@ -2,8 +2,8 @@
 
 /**
  * Allows the creation of a collection giving an easier data manipulation.
- * @author mstevz <myeaaaah@gmail.com>
- * @license https://github.com/mstevz/Collection/blob/master/LICENSE MIT License
+ * @author Miguel Esteves <mstevz@mail.com>
+ * @license https://github.com/mstevz/collection/blob/master/LICENSE MIT License
  */
 class Collection extends \ArrayObject implements \JsonSerializable {
 

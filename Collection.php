@@ -1,9 +1,11 @@
 <?php
 
+namespace mstevz;
+
 /**
  * Allows the creation of a collection giving an easier data manipulation.
  * @author Miguel Esteves <mstevz@mail.com>
- * @license https://github.com/mstevz/collection/blob/master/LICENSE MIT License
+ * @license https://github.com/mstevz/collection/blob/master/LICENSE
  */
 class Collection extends \ArrayObject implements \JsonSerializable {
 
@@ -181,10 +183,17 @@ class Collection extends \ArrayObject implements \JsonSerializable {
     *
     * @param string $json
     * @param bool $override Choose to replace or add the data.
+    * @throws \Exception
     **/
     public function fromJson(string $json, bool $override = false) {
-        $value = json_decode($json);
+        $value = json_decode($json, true);
+
+        if(json_last_error())
+            throw new \Exception("Could not convert a JSON object to a Collection object due to: \"" . json_last_error_msg() . "\"");
+
         $this->container = ($override) ? $value : $this->container . $value;
+        $this->count = count($this->container);
+
     }
 
     /**

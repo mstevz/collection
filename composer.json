@@ -17,8 +17,8 @@
     ],
 
     "support": {
-        "source": "https://github.com/mstevz/Collection",
-        "issues": "https://github.com/mstevz/Collection/issues"
+        "source": "https://github.com/mstevz/collection",
+        "issues": "https://github.com/mstevz/collection/issues"
     },
 
     "autoload": {

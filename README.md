@@ -106,7 +106,7 @@ If you:
 2. Have any question
 3. Have any suggestion
 
-Please let me know by posting on: [Github Collection Issues](https://github.com/myeaaaah/Collection/issues)
+Please let me know by posting on: [Github Collection Issues](https://github.com/mstevz/collection/issues)
 
 ---
 

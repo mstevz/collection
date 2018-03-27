@@ -12,10 +12,10 @@ class Collection extends \ArrayObject implements \JsonSerializable {
     # Properties
 
     /**
-    * Property that contains the index position of each associate key.
+    * Property that contains the index position of each associative key.
     * @var array
     */
-    private $indexMap;
+    private $containerKeys;
 
     /**
     * Property that contains the collection values, accessible by the associative key.
@@ -31,88 +31,35 @@ class Collection extends \ArrayObject implements \JsonSerializable {
 
     # Constructor
     public function __construct(){
-        $this->indexMap = [];
-        $this->container = [];
+        $this->clear();
+    }
+
+
+    # --------------- #
+    # Private Methods #
+    # --------------- #
+
+    /**
+    * Stores a new value in container and indexes its associative key.
+    * @param string $key
+    */
+    private function index(string $key, $value){
+        $this->container[$key] = $value;
+        $this->containerKeys[$this->count++] = $key;
+    }
+
+
+    # -------------- #
+    # Public Methods #
+    # -------------- #
+
+    /**
+     * Sets all values to default.
+     */
+    public function clear() {
         $this->count = 0;
-    }
-
-    # Public Methods
-
-    /**
-    * Returns the index of a given associative key.
-    * @param string $key
-    */
-    public function indexOf(string $key){
-        foreach($this->indexMap as $index => $value){
-            if($key == $value)
-                return $index;
-        }
-    }
-
-    /**
-    * Add's a new value to the collection.
-    * @param string $key
-    * @param object $value
-    * @return Collection
-    */
-    public function add(string $offset, $value) : Collection {
-        if($this->offsetExists($offset))
-            throw new \Exception("Cannot duplicate a key entry: \"{$offset}\"");
-
-        $this->indexMap[$this->count++]= $offset;
-        $this->container[$offset] = $value;
-
-        return $this;
-    }
-
-    /**
-    * Removes an existing value.
-    * @param string $key
-    * @return Collection
-    */
-    public function remove(string $offset) : Collection {
-        unset($this->indexMap[$this->indexOf($offset)]);
-        $this->indexMap = array_values($this->indexMap);
-
-        unset($this->container[$offset]);
-        $this->count--;
-
-        return $this;
-    }
-
-    /**
-     * Returns if given offset exists or not.
-     * @param  string|int $offset
-     * @return bool
-     */
-    public function offsetExists($offset) : bool {
-        return isset($this->container[$offset]);
-    }
-
-    /**
-     * Behaviour for when operator [] is used to retrieve any value from the
-     * collection.
-     * @param string $offset
-     */
-    public function offsetGet($offset) {
-        return $this->get($offset);
-    }
-
-    /**
-     * Behaviour for when operator [] is used in as new value allocation.
-     * @param string $offset
-     * @param mixed $value
-     */
-    public function offsetSet($offset, $value) {
-        $this->add($offset, $value);
-    }
-
-    /**
-     * Behaviour for when operator [] is used in unset() function.
-     * @param string|int $offset
-     */
-    public function offsetUnset($offset) {
-        $this->remove($offset);
+        $this->container = [];
+        $this->containerKeys = [];
     }
 
     /**
@@ -124,14 +71,76 @@ class Collection extends \ArrayObject implements \JsonSerializable {
     }
 
     /**
-    * Searches for the given associative key or index.
-    * @return object
+    * Add's a new value to the collection.
+    * @param string $key
+    * @param object $value
+    * @throws \InvalidArgumentException
+    * @throws \UnexpectedValueException
+    * @return Collection
     */
-    public function get($key){
-        if(gettype($key) == "integer" && isset($this->indexMap[$key]))
-            $key = $this->indexMap[$key];
+    public function add(string $key, $value) : Collection {
+        if(is_numeric($key))
+            throw new \InvalidArgumentException('Cannot add associative key as numeric value.');
 
-        return ($this->container[$key]) ?? null;
+        if($this->offsetExists($key))
+            throw new \UnexpectedValueException("Cannot duplicate a key entry: \"{$key}\"");
+
+        $this->index($key, $value);
+
+        return $this;
+    }
+
+    /**
+    * Removes an existing value.
+    * @param string $key
+    * @return Collection
+    */
+    public function remove(string $key) : Collection {
+        unset($this->containerKeys[$this->indexOf($key)]);
+        $this->containerKeys = array_values($this->containerKeys);
+        unset($this->container[$key]);
+        $this->count--;
+
+        return $this;
+    }
+
+    /**
+     * Updates a collection value or adds if doesnt exist.
+     * @param  string|int $offset
+     * @param  mixed $value
+     * @throws \OutOfRangeException
+     */
+    public function update($key, $value){
+        try{
+            $this->add($key, $value);
+        }
+        catch(\InvalidArgumentException $e){ // Tries to update when integer is given.
+            $actualKey = $this->keyOf($key);
+
+            if(is_null($actualKey))
+                throw new \OutOfRangeException("Cannot update invalid index.", 0, $e);
+
+            $this->update($actualKey, $value);
+        }
+        catch(\UnexpectedValueException $e){
+            $this->container[$key] = $value;
+        }
+    }
+
+    /**
+    * Searches for the given associative key or index.
+    * @param string|int $offset
+    * @throws \OutOfBoundsException
+    * @return mixed
+    */
+    public function get($offset){
+        if(!$this->offsetExists($offset))
+            throw new \OutOfBoundsException('Invalid offset.');
+
+        if(is_int($offset))
+            $offset = $this->containerKeys[$offset];
+
+        return $this->container[$offset];
     }
 
     /**
@@ -144,10 +153,68 @@ class Collection extends \ArrayObject implements \JsonSerializable {
 
     /**
      * Returns all existing offsets name values.
-     * @return array [description]
+     * @return array
      */
     public function getOffsets() : array {
-        return array_keys($this->container);
+        return $this->containerKeys;
+    }
+
+    /**
+    * Returns the index of a given the associative key.
+    * @param string $key
+    * @return int|null Returns NULL if not found.
+    */
+    public function indexOf(string $key) {
+        $index = array_search($key, $this->containerKeys);
+
+        return ($index === false) ? null : $index;
+    }
+
+    /**
+     * Returns the associative key of the given index.
+     * @param  int
+     * @return string|null Returns NULL if not found.
+     */
+    public function keyOf(int $index) {
+        return $this->containerKeys[$index] ?? null;
+    }
+
+    /**
+     * Returns if given offset exists or not.
+     * @param  string|int $offset
+     * @return bool
+     */
+    public function offsetExists($offset) : bool {
+        $hasKeyIndex = is_int($offset) ? !is_null($this->keyOf($offset)) : false;
+
+        return (isset($this->container[$offset]) || $hasKeyIndex);
+    }
+
+    /**
+     * Behaviour for when operator [] is used to retrieve any value from the
+     * collection.
+     * @param string $offset
+     * @return mixed
+     */
+    public function offsetGet($offset) {
+        return $this->get($offset);
+    }
+
+    /**
+     * Behaviour for when operator [] is used in as new value allocation.
+     * @param string|int $offset
+     * @param mixed
+     */
+    public function offsetSet($offset, $value) {
+        $this->update($offset, $value);
+    }
+
+    /**
+     * Behaviour for when operator [] is used in unset() function.
+     * @param string|int $offset
+     */
+    public function offsetUnset($offset) {
+        $this->remove($offset);
     }
 
     /**
@@ -162,9 +229,8 @@ class Collection extends \ArrayObject implements \JsonSerializable {
     public function each(callable $callback) : array {
         $buffer = [];
 
-        foreach($this->_data as $index => $value){
-            $buffer[] .= $callback($index, $value);
-        }
+        foreach($this->container as $offset => $value)
+            $buffer[] .= $callback($offset, $value);
 
         return $buffer;
     }
@@ -185,15 +251,15 @@ class Collection extends \ArrayObject implements \JsonSerializable {
     * @param bool $override Choose to replace or add the data.
     * @throws \Exception
     **/
-    public function fromJson(string $json, bool $override = false) {
-        $value = json_decode($json, true);
+    public function fromJson(string $json) {
+        $jsonArray = json_decode($json, true);
 
         if(json_last_error())
-            throw new \Exception("Could not convert a JSON object to a Collection object due to: \"" . json_last_error_msg() . "\"");
+            throw new \Exception('Could not convert a JSON object to a Collection object due to: \"' . json_last_error_msg() . '\"');
 
-        $this->container = ($override) ? $value : $this->container . $value;
-        $this->count = count($this->container);
-
+        foreach($jsonArray as $offset => $value){
+            $this->update($offset, $value);
+        }
     }
 
     /**

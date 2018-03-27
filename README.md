@@ -28,8 +28,9 @@ If your wish to add it in your composer.json file just add it to your "require" 
 }
 ```
 
-## <div align="center">_Documentation_</div>
-Comming soon.
+## <div align="center">_Wiki_</div>
+* [Home](https://github.com/mstevz/collection/wiki)
+* [Documentation](https://github.com/mstevz/collection/wiki/Documentation)
 
 ## <div align="center">_Reports_</div>
 If you:

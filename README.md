@@ -3,7 +3,7 @@
 ## <div align="center">_Description_</div>
 Allows the creation of a collection giving an easier data manipulation.
 
-* [Home](https://github.com/mstevz/collection/wiki)
+* [Wiki Home](https://github.com/mstevz/collection/wiki)
 * [Documentation](https://github.com/mstevz/collection/wiki/Documentation)
 
 ## <div align="center">_Highlights_</div>

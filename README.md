@@ -3,6 +3,9 @@
 ## <div align="center">_Description_</div>
 Allows the creation of a collection giving an easier data manipulation.
 
+* [Home](https://github.com/mstevz/collection/wiki)
+* [Documentation](https://github.com/mstevz/collection/wiki/Documentation)
+
 ## <div align="center">_Highlights_</div>
 * Access your data via associative key or index position!
 * Work your object as if it was an array.
@@ -27,10 +30,6 @@ If your wish to add it in your composer.json file just add it to your "require" 
      "mstevz/collection":"*"
 }
 ```
-
-## <div align="center">_Wiki_</div>
-* [Home](https://github.com/mstevz/collection/wiki)
-* [Documentation](https://github.com/mstevz/collection/wiki/Documentation)
 
 ## <div align="center">_Reports_</div>
 If you:

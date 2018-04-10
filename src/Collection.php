@@ -9,8 +9,6 @@ namespace mstevz;
  */
 class Collection extends \ArrayObject implements \JsonSerializable {
 
-    # Properties
-
     /**
     * Property that contains the index position of each associative key.
     * @var array
@@ -30,14 +28,10 @@ class Collection extends \ArrayObject implements \JsonSerializable {
     private $count;
 
     # Constructor
-    public function __construct(){
+    public function __construct(array $array = []){
         $this->clear();
+        $this->fromArray($array);
     }
-
-
-    # --------------- #
-    # Private Methods #
-    # --------------- #
 
     /**
     * Stores a new value in container and indexes its associative key.
@@ -47,11 +41,6 @@ class Collection extends \ArrayObject implements \JsonSerializable {
         $this->container[$key] = $value;
         $this->containerKeys[$this->count++] = $key;
     }
-
-
-    # -------------- #
-    # Public Methods #
-    # -------------- #
 
     /**
      * Sets all values to default.
@@ -245,7 +234,7 @@ class Collection extends \ArrayObject implements \JsonSerializable {
     }
 
     /**
-    * Adds data from json values.
+    * Fills the collection from json values.
     *
     * @param string $json
     * @param bool $override Choose to replace or add the data.
@@ -263,6 +252,16 @@ class Collection extends \ArrayObject implements \JsonSerializable {
     }
 
     /**
+     * Fills the collection from an array.
+     * @param  array  $arr
+     */
+    public function fromArray(array $arr){
+        foreach($arr as $offset => $value){
+            $this->add($offset, $value);
+        }
+    }
+
+    /**
      * Converts object into serialized string.
      * @return string
      */
@@ -274,8 +273,8 @@ class Collection extends \ArrayObject implements \JsonSerializable {
      * Converts serialized string into new object.
      * @param  string $string
      */
-    public function unserialize($string) {
-       $this->container = unserialize($string);
+    public function unserialize($serialized) {
+       $this->container = unserialize($serialized);
     }
 
     /**

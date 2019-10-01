@@ -106,8 +106,9 @@ class Collection extends \ArrayObject implements \JsonSerializable {
         catch(\InvalidArgumentException $e){ // Tries to update when integer is given.
             $actualKey = $this->keyOf($key);
 
-            if(is_null($actualKey))
-                throw new \OutOfRangeException("Cannot update invalid index.", 0, $e);
+            if(is_null($actualKey)){
+                throw new \OutOfRangeException('Cannot update invalid index.', 0, $e);
+            }
 
             $this->update($actualKey, $value);
         }
@@ -212,16 +213,35 @@ class Collection extends \ArrayObject implements \JsonSerializable {
      *
      * Returns any return value from the callable object.
      *
-     * @param  callable $callback
+     * @param  callable $callback   Takes offset and value as parameter.
      * @return array                Returned values from callable object.
      */
     public function each(callable $callback) : array {
         $buffer = [];
 
-        foreach($this->container as $offset => $value)
+        foreach($this->container as $offset => $value){
             $buffer[] .= $callback($offset, $value);
+        }
 
         return $buffer;
+    }
+
+    /**
+     * Search for the desire value with a true/false mapping.
+     * @param  callable $callback   Takes offset and value as parameter.
+     * @return [type]               [description]
+     */
+    public function find(callable $callback) {
+        $result = null;
+
+        foreach($this->container as $offset => $value){
+            if($callback($offset, $value)){
+                $result = $value;
+                break;
+            }
+        }
+
+        return $value;
     }
 
     /**

@@ -45,10 +45,11 @@ class Collection extends \ArrayObject implements \JsonSerializable {
     /**
      * Sets all values to default.
      */
-    public function clear() {
+    public function clear() : Collection {
         $this->count = 0;
         $this->container = [];
         $this->containerKeys = [];
+        return $this;
     }
 
     /**
@@ -69,7 +70,7 @@ class Collection extends \ArrayObject implements \JsonSerializable {
     */
     public function add(string $key, $value) : Collection {
         if(is_numeric($key))
-            throw new \InvalidArgumentException('Cannot add associative key as numeric value.');
+            throw new \InvalidArgumentException('Cannot add numeric value as associative key.');
 
         if($this->offsetExists($key))
             throw new \UnexpectedValueException("Cannot duplicate a key entry: \"{$key}\"");
@@ -220,7 +221,7 @@ class Collection extends \ArrayObject implements \JsonSerializable {
         $buffer = [];
 
         foreach($this->container as $offset => $value){
-            $buffer[] .= $callback($offset, $value);
+            array_push($buffer, $callback($offset, $value));
         }
 
         return $buffer;
@@ -263,8 +264,9 @@ class Collection extends \ArrayObject implements \JsonSerializable {
     public function fromJson(string $json) {
         $jsonArray = json_decode($json, true);
 
-        if(json_last_error())
+        if(json_last_error()){
             throw new \Exception('Could not convert a JSON object to a Collection object due to: \"' . json_last_error_msg() . '\"');
+	}
 
         foreach($jsonArray as $offset => $value){
             $this->update($offset, $value);
@@ -275,10 +277,13 @@ class Collection extends \ArrayObject implements \JsonSerializable {
      * Fills the collection from an array.
      * @param  array  $arr
      */
-    public function fromArray(array $arr){
+    public function fromArray(array $arr) : bool {
+
         foreach($arr as $offset => $value){
             $this->add($offset, $value);
         }
+
+        return true;
     }
 
     /**
@@ -298,7 +303,7 @@ class Collection extends \ArrayObject implements \JsonSerializable {
     }
 
     /**
-    * Allows this class to be json serializable.
+    * Allows this to be json serializable.
     * @return array
     */
     public function jsonSerialize() : array {
@@ -306,7 +311,7 @@ class Collection extends \ArrayObject implements \JsonSerializable {
     }
 
     /**
-    * Allows this class to be iteratable.
+    * Allows this to be iteratable.
     * @return ArrayIterator
     */
     public function getIterator() : \ArrayIterator {

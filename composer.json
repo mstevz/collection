@@ -1,38 +1,33 @@
 {
     "name": "mstevz/collection",
-
     "description": "Allows the creation of a collection giving an easier data manipulation.",
-
     "require": {
         "php": "^7.0"
     },
-
     "license": "MIT",
-
     "authors": [
         {
             "name": "Miguel Esteves",
             "email": "mstevz@mail.com"
         }
     ],
-
     "support": {
         "source": "https://github.com/mstevz/collection",
         "issues": "https://github.com/mstevz/collection/issues"
     },
-
     "autoload": {
        "psr-4": {
            "mstevz\\": "src/"
        }
    },
-
    "keywords": [
        "Collection",
        "Vectors",
        "Lists",
        "Array",
        "PHP"
-   ]
-
+   ],
+    "require-dev": {
+        "phpunit/phpunit": "^8.3"
+    }
 }

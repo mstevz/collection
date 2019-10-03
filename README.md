@@ -1,6 +1,6 @@
-# Collection
+# Collection [![Build Status](https://travis-ci.org/mstevz/collection.svg?branch=development)](https://travis-ci.org/mstevz/collection)
      
-[![Build Status](https://travis-ci.org/mstevz/collection.svg?branch=development)](https://travis-ci.org/mstevz/collection)
+
     
 ## <div align="center">_Description_</div>
 Allows the creation of a collection giving an easier data manipulation.

@@ -242,7 +242,7 @@ class Collection extends \ArrayObject implements \JsonSerializable {
             }
         }
 
-        return $value;
+        return $result;
     }
 
     /**

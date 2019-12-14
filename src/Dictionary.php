@@ -1,13 +1,13 @@
 <?php
 
-namespace mstevz;
+namespace mstevz\collection;
 
 /**
- * Allows the creation of a collection giving an easier data manipulation.
+ * Allows the creation of a dictionary giving an easier data manipulation.
  * @author Miguel Esteves <mstevz@mail.com>
  * @license https://github.com/mstevz/collection/blob/master/LICENSE
  */
-class Collection extends \ArrayObject implements \JsonSerializable {
+class Dictionary extends \ArrayObject implements \JsonSerializable {
 
     /**
     * Property that contains the index position of each associative key.
@@ -100,9 +100,12 @@ class Collection extends \ArrayObject implements \JsonSerializable {
      * @param  mixed $value
      * @throws \OutOfRangeException
      */
-    public function update($key, $value){
+    public function update($key, $value) : bool {
+        $result = false;
+
         try{
             $this->add($key, $value);
+            $result = true;
         }
         catch(\InvalidArgumentException $e){ // Tries to update when integer is given.
             $actualKey = $this->keyOf($key);
@@ -111,11 +114,13 @@ class Collection extends \ArrayObject implements \JsonSerializable {
                 throw new \OutOfRangeException('Cannot update invalid index.', 0, $e);
             }
 
-            $this->update($actualKey, $value);
+            $result = $this->update($actualKey, $value);
         }
         catch(\UnexpectedValueException $e){
             $this->container[$key] = $value;
         }
+
+        return $result;
     }
 
     /**
@@ -125,11 +130,13 @@ class Collection extends \ArrayObject implements \JsonSerializable {
     * @return mixed
     */
     public function get($offset){
-        if(!$this->offsetExists($offset))
+        if(!$this->offsetExists($offset)){
             throw new \OutOfBoundsException('Invalid offset.');
+        }
 
-        if(is_int($offset))
+        if(is_int($offset)){
             $offset = $this->containerKeys[$offset];
+        }
 
         return $this->container[$offset];
     }
@@ -155,7 +162,7 @@ class Collection extends \ArrayObject implements \JsonSerializable {
     * @param string $key
     * @return int|null Returns NULL if not found.
     */
-    public function indexOf(string $key) {
+    public function indexOf(string $key) : ?int {
         $index = array_search($key, $this->containerKeys);
 
         return ($index === false) ? null : $index;
@@ -166,7 +173,7 @@ class Collection extends \ArrayObject implements \JsonSerializable {
      * @param  int
      * @return string|null Returns NULL if not found.
      */
-    public function keyOf(int $index) {
+    public function keyOf(int $index) : ?string {
         return $this->containerKeys[$index] ?? null;
     }
 
@@ -230,7 +237,7 @@ class Collection extends \ArrayObject implements \JsonSerializable {
     /**
      * Search for the desire value with a true/false mapping.
      * @param  callable $callback   Takes offset and value as parameter.
-     * @return [type]               [description]
+     * @return mixed
      */
     public function find(callable $callback) {
         $result = null;
@@ -290,7 +297,7 @@ class Collection extends \ArrayObject implements \JsonSerializable {
      * Converts object into serialized string.
      * @return string
      */
-    public function serialize() {
+    public function serialize() : string {
        return serialize($this->container);
     }
 

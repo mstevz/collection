@@ -3,7 +3,6 @@
 namespace mstevz\collection;
 
 /**
- * Allows the creation of a dictionary giving an easier data manipulation.
  * @author Miguel Esteves <mstevz@mail.com>
  * @license https://github.com/mstevz/collection/blob/master/LICENSE
  */
@@ -45,7 +44,7 @@ class Dictionary extends \ArrayObject implements \JsonSerializable {
     /**
      * Sets all values to default.
      */
-    public function clear() : Collection {
+    public function clear() : Dictionary {
         $this->count = 0;
         $this->container = [];
         $this->containerKeys = [];

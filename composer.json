@@ -1,6 +1,6 @@
 {
     "name": "mstevz/collection",
-    "description": "Allows the creation of a collection giving an easier data manipulation.",
+    "description": "Allows the creation of a collection providing an easier data manipulation.",
     "require": {
         "php": "^7.0"
     },
@@ -17,7 +17,7 @@
     },
     "autoload": {
        "psr-4": {
-           "mstevz\\": "src/"
+           "mstevz\\collection": "src/"
        }
    },
    "keywords": [
@@ -25,7 +25,8 @@
        "Vectors",
        "Lists",
        "Array",
-       "PHP"
+       "PHP",
+       "Dictionary"
    ],
     "require-dev": {
         "phpunit/phpunit": "^8.3"

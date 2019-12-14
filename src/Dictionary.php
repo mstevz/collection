@@ -66,9 +66,9 @@ class Dictionary extends \ArrayObject implements \JsonSerializable {
     * @param object $value
     * @throws \InvalidArgumentException
     * @throws \UnexpectedValueException
-    * @return Collection
+    * @return Dictionary
     */
-    public function add(string $key, $value) : Collection {
+    public function add(string $key, $value) : Dictionary {
         if(is_numeric($key))
             throw new \InvalidArgumentException('Cannot add numeric value as associative key.');
 
@@ -83,9 +83,9 @@ class Dictionary extends \ArrayObject implements \JsonSerializable {
     /**
     * Removes an existing value.
     * @param string $key
-    * @return Collection
+    * @return Dictionary
     */
-    public function remove(string $key) : Collection {
+    public function remove(string $key) : Dictionary {
         unset($this->containerKeys[$this->indexOf($key)]);
         $this->containerKeys = array_values($this->containerKeys);
         unset($this->container[$key]);

@@ -15,7 +15,7 @@ class Dictionary extends \ArrayObject implements \JsonSerializable {
     private $containerKeys;
 
     /**
-    * Property that contains the collection values, accessible by the associative key.
+    * Property that contains the Dictionary values, accessible by the associative key.
     * @var array
     */
     private $container;
@@ -52,7 +52,7 @@ class Dictionary extends \ArrayObject implements \JsonSerializable {
     }
 
     /**
-    * Returns the size of the collection.
+    * Returns the size of the Dictionary.
     * @return int
     */
     public function count() : int {
@@ -60,7 +60,7 @@ class Dictionary extends \ArrayObject implements \JsonSerializable {
     }
 
     /**
-    * Add's a new value to the collection.
+    * Add's a new value to the Dictionary.
     * @param string $key
     * @param object $value
     * @throws \InvalidArgumentException
@@ -94,7 +94,7 @@ class Dictionary extends \ArrayObject implements \JsonSerializable {
     }
 
     /**
-     * Updates a collection value or adds if doesnt exist.
+     * Updates a Dictionary value or adds if doesnt exist.
      * @param  string|int $offset
      * @param  mixed $value
      * @throws \OutOfRangeException
@@ -141,7 +141,7 @@ class Dictionary extends \ArrayObject implements \JsonSerializable {
     }
 
     /**
-     * Returns entire collection as array.
+     * Returns entire Dictionary as array.
      * @return array
      */
     public function getAll() : array {
@@ -189,7 +189,7 @@ class Dictionary extends \ArrayObject implements \JsonSerializable {
 
     /**
      * Behaviour for when operator [] is used to retrieve any value from the
-     * collection.
+     * Dictionary.
      * @param string $offset
      * @return mixed
      */
@@ -215,7 +215,7 @@ class Dictionary extends \ArrayObject implements \JsonSerializable {
     }
 
     /**
-     * Iterates the collection and executes callable object with the current
+     * Iterates the Dictionary and executes callable object with the current
      * value as argument.
      *
      * Returns any return value from the callable object.
@@ -252,7 +252,7 @@ class Dictionary extends \ArrayObject implements \JsonSerializable {
     }
 
     /**
-    * Returns the collection values as json string.
+    * Returns the Dictionary values as json string.
     *
     * @return string
     */
@@ -261,7 +261,7 @@ class Dictionary extends \ArrayObject implements \JsonSerializable {
     }
 
     /**
-    * Fills the collection from json values.
+    * Fills the Dictionary from json values.
     *
     * @param string $json
     * @param bool $override Choose to replace or add the data.
@@ -271,7 +271,7 @@ class Dictionary extends \ArrayObject implements \JsonSerializable {
         $jsonArray = json_decode($json, true);
 
         if(json_last_error()){
-            throw new \Exception('Could not convert a JSON object to a Collection object due to: \"' . json_last_error_msg() . '\"');
+            throw new \Exception('Could not convert a JSON object to a Dictionary object due to: \"' . json_last_error_msg() . '\"');
 	}
 
         foreach($jsonArray as $offset => $value){
@@ -280,16 +280,16 @@ class Dictionary extends \ArrayObject implements \JsonSerializable {
     }
 
     /**
-     * Fills the collection from an array.
+     * Fills the Dictionary from an array.
      * @param  array  $arr
      */
-    public function fromArray(array $arr) : bool {
+    public function fromArray(array $arr) : Dictionary {
 
         foreach($arr as $offset => $value){
             $this->add($offset, $value);
         }
 
-        return true;
+        return $this;
     }
 
     /**

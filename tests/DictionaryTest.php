@@ -1,9 +1,9 @@
 <?php
 
-use mstevz\Collection;
+use \mstevz\collection\Dictionary;
 use PHPUnit\Framework\TestCase;
 
-class CollectionTest extends TestCase {
+class DictionaryTest extends TestCase {
 
     private $instance;
 
@@ -73,7 +73,7 @@ class CollectionTest extends TestCase {
     }
 
     protected function setUp() : void {
-        $this->instance = new Collection;
+        $this->instance = new Dictionary();
     }
 
     /**
@@ -81,7 +81,7 @@ class CollectionTest extends TestCase {
      * @return [type] [description]
      */
     public function testInstanceOf(){
-        $this->assertInstanceOf(Collection::class, $this->instance);
+        $this->assertInstanceOf(Dictionary::class, $this->instance);
     }
 
     public function testGetAllFunctionReturnsArray(){
@@ -105,28 +105,27 @@ class CollectionTest extends TestCase {
     }
 
     /**
-     * [testAddFunctionReturnsCollection description]
+     * [testAddFunctionReturnsDictionary description]
      * @depends testAddFunction
      * @return [type] [description]
      */
-    public function testAddFunctionReturnsInstance(){
-        $this->assertInstanceOf(Collection::class, $this->instance->add('key', 'value'));
+    public function testAddFunctionReturnsDictionaryInstance(){
+        $this->assertInstanceOf(Dictionary::class, $this->instance->add('key', 'value'));
     }
 
     /**
-     * [testFromArrayFunctionReturnsTrue description]
+     * [testFromArrayFunctionReturnsDictionaryInstance description]
      * @dataProvider getDataProvider
      * @param  [type] $array [description]
      * @return [type]        [description]
      */
-    public function testFromArrayFunctionReturnsTrue($array){
-        $result = $this->instance->fromArray($array);
-        $this->assertEquals(true, $result);
+    public function testFromArrayFunctionReturnsDictionaryInstance($array){
+        $this->assertInstanceOf(Dictionary::class, $this->instance->fromArray($array));
     }
 
     /**
      * [testRemoveFunctionRemovesProvidedKey description]
-     * @depends testFromArrayFunctionReturnsTrue
+     * @depends testFromArrayFunctionReturnsDictionaryInstance
      * @depends testGetAllFunctionReturnsArray
      * @depends testCountFunctionReturnsInt
      * @return [type] [description]
@@ -166,7 +165,7 @@ class CollectionTest extends TestCase {
      * @depends testGetFunctionReturnsValue
      * @return [type] [description]
      */
-    public function testUpdateChangesCollectionContainerValue(){
+    public function testUpdateChangesDictionaryContainerValue(){
         $key = 'keyValue';
         $value = 'value';
 
@@ -217,7 +216,7 @@ class CollectionTest extends TestCase {
     /**
      * [testClearFunction description]
      * @dataProvider getDataProvider
-     * @depends testFromArrayFunctionReturnsTrue
+     * @depends testFromArrayFunctionReturnsDictionaryInstance
      * @depends testCountFunctionReturnsInt
      * @depends testGetAllFunctionReturnsArray
      *
@@ -234,7 +233,7 @@ class CollectionTest extends TestCase {
     /**
      * [testClearFunction description]
      * @dataProvider getDataProvider
-     * @depends testFromArrayFunctionReturnsTrue
+     * @depends testFromArrayFunctionReturnsDictionaryInstance
      * @depends testCountFunctionReturnsInt
      * @depends testGetOffsetsReturnsArrayAndContainsKeys
      *
@@ -250,20 +249,20 @@ class CollectionTest extends TestCase {
     /**
      * [testClearFunction description]
      * @dataProvider getDataProvider
-     * @depends testFromArrayFunctionReturnsTrue
+     * @depends testFromArrayFunctionReturnsDictionaryInstance
      * @return [type] [description]
      */
     public function testClearFunctionReturnsInstance($array){
         $this->instance->fromArray($array);
         $result = $this->instance->clear();
-        $this->assertInstanceOf(Collection::class, $result);
+        $this->assertInstanceOf(Dictionary::class, $result);
     }
 
     /**
      * [testGetAllOffsetsReturnsArray description]
      * @param  [type] $key   [description]
      * @param  [type] $value [description]
-     * @depends testFromArrayFunctionReturnsTrue
+     * @depends testFromArrayFunctionReturnsDictionaryInstance
      * @depends testAddFunction
      * @dataProvider addValueDataProvider
      *
@@ -314,7 +313,7 @@ class CollectionTest extends TestCase {
     /**
      * [testEachFunctionReturnsArray description]
      * @param [type] $values [description]
-     * @depends testFromArrayFunctionReturnsTrue
+     * @depends testFromArrayFunctionReturnsDictionaryInstance
      * @dataProvider getDataProvider
      */
     public function testEachFunctionReturnsArray($values) {
@@ -329,7 +328,7 @@ class CollectionTest extends TestCase {
 
     /**
      * [testFindFunctionReturnsValue description]
-     * @depends testFromArrayFunctionReturnsTrue
+     * @depends testFromArrayFunctionReturnsDictionaryInstance
      * @dataProvider getDataProvider
      */
     public function testFindFunctionReturnsValue(array $values) {
@@ -363,14 +362,14 @@ class CollectionTest extends TestCase {
     /**
      * [testCanIterateInstance description]
      * @param  array  $values [description]
-     * @depends testFromArrayFunctionReturnsTrue
+     * @depends testFromArrayFunctionReturnsDictionaryInstance
      * @dataProvider getDataProvider
      * @return [type]         [description]
      */
     public function testCanIterateInstance(array $values){
         $this->instance->fromArray($values);
         $count = 0;
-        
+
         foreach($this->instance as $key => $value){
             $this->assertIsString($key);
             $count++;
@@ -378,7 +377,6 @@ class CollectionTest extends TestCase {
 
         $this->assertEquals(sizeof($values),$count);
     }
-
 
 
 }

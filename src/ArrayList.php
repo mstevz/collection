@@ -33,16 +33,22 @@ class ArrayList extends \ArrayObject {
      */
     private $isValueTypeRestricted;
 
+    private $isCastAllowed;
 
-    public function __construct(string $type = '*'){
+
+    public function __construct(string $type = '*', $castAllowed = true){
         $this->clear();
 
-        if($this->isValidType($type)){
-            $this->typeOfList = $type;
+        if(!$this->isValidType($type))
+            throw new \InvalidArgumentException("Cannot provide \"{$type}\" as type");
 
-            // Define if List should be value type mixed or not.
-            $this->isValueTypeRestricted = ($type == '*') ? false : true;
-        }
+        $this->typeOfList = $type;
+
+        // Define if List should be value type mixed or not.
+        $this->isValueTypeRestricted = ($type != '*');
+
+        $this->isCastAllowed = $castAllowed;
+
     }
 
     /**
@@ -51,6 +57,62 @@ class ArrayList extends \ArrayObject {
      */
     private function rebaseIndexes() {
         $this->container = array_values($this->container);
+    }
+
+    private function convertToBool($value) : bool {
+        /*
+        Currently converting strings as default.
+
+        'false' will return true.
+
+         */
+        return (bool)$value;
+    }
+
+    private function convertToInt($value) : int {
+        if (gettype($value) == 'array') {
+            throw new \Exception("Cannot convert type 'array' to 'int'");
+        }
+
+        return (int)$value;
+    }
+
+    private function convertToDouble($value) : float {
+        if(gettype($value) == 'boolean') {
+            throw new \Exception("Cannot convert type 'boolean' to 'double'");
+        }
+        return (float)$value;
+    }
+
+    private function convertToString($value) : string {
+        return (string)$value;
+    }
+
+    /**
+     * [attemptCast description]
+     * @param  [type] $value [description]
+     * @throws \InvalidArgumentException
+     * @return [type]        [description]
+     */
+    private function attemptCast($value) {
+        switch($this->typeOfList) {
+            case 'boolean':
+                $value = $this->convertToBool($value);
+                break;
+            case 'integer':
+                $value = $this->convertToInt($value);
+                break;
+            case 'double':
+                $value = $this->convertToDouble($value);
+                break;
+            case 'string':
+                $value = $this->convertToString($value);
+                break;
+            default:
+                throw new \InvalidArgumentException("Cannot cast this value to \"{$this->typeOfList}\"");
+        }
+
+        return $value;
     }
 
     /**
@@ -66,7 +128,8 @@ class ArrayList extends \ArrayObject {
             case '*':
             case 'boolean':
             case 'integer':
-            case 'float':
+            case 'double':
+            case 'string':
             case 'array':
             case 'object':
             case 'resource':
@@ -91,13 +154,19 @@ class ArrayList extends \ArrayObject {
     /**
      * Adds a new value
      * @param  mixed    $value
+     * @throws \Exception
      * @return ArrayList
      */
     public function add($value) : ArrayList {
 
         if($this->isValueTypeRestricted){
             if($this->typeOfList != gettype($value)){
-                throw new \InvalidArgumentException('Invalid value type given.');
+
+                if(!$this->isCastAllowed){
+                    throw new \Exception("Invalid value provided. Cannot add type of \"" . gettype($value) . "\" to a ArrayList of type \"{$this->typeOfList}\". NOTE: Type Casting is turned off.");
+                }
+
+                $value = $this->attemptCast($value);
             }
         }
 
@@ -127,7 +196,7 @@ class ArrayList extends \ArrayObject {
      * @param  int    $offset
      * @throws \OutOfBoundsException
      */
-    public function remove(int $offset){
+    public function remove(int $offset) : bool {
 
         if(!($offset >= 0 && $offset < $this->length)){
             throw new \OutOfBoundsException();
@@ -137,7 +206,7 @@ class ArrayList extends \ArrayObject {
 
         $this->length--;
         $this->rebaseIndexes();
-
+        return true;
     }
 
     /**
@@ -163,7 +232,15 @@ class ArrayList extends \ArrayObject {
     }
 
 
-    public function removeByValue($value){ }
+    public function removeByValue($value) : bool {
+        $offset = $this->search($value);
+
+        if($offset === false){
+            throw new \Exception('Cant remove unexisting value');
+        }
+
+        return $this->remove($offset);
+    }
 
     /**
      *

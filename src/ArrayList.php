@@ -33,6 +33,10 @@ class ArrayList extends \ArrayObject {
      */
     private $isValueTypeRestricted;
 
+    /**
+     * Option for casting values.
+     * @var bool
+     */
     private $isCastAllowed;
 
 
@@ -46,9 +50,7 @@ class ArrayList extends \ArrayObject {
 
         // Define if List should be value type mixed or not.
         $this->isValueTypeRestricted = ($type != '*');
-
         $this->isCastAllowed = $castAllowed;
-
     }
 
     /**
@@ -151,6 +153,10 @@ class ArrayList extends \ArrayObject {
         $this->length = 0;
     }
 
+    public function getLength() : int {
+        return $this->length;
+    }
+
     /**
      * Adds a new value
      * @param  mixed    $value
@@ -213,8 +219,11 @@ class ArrayList extends \ArrayObject {
      * Removes the first index item.
      */
     public function removeFirst(){
-        $value = array_shift($this->container);
-        $this->length--;
+
+        if($this->length > 0){
+            $value = array_shift($this->container);
+            $this->length--;
+        }
 
         //ksort($this->container);
         return $value;
@@ -224,14 +233,21 @@ class ArrayList extends \ArrayObject {
      * Removes the last index item.
      */
     public function removeLast() {
-        $value = array_pop($this->container);
-        $this->length--;
+
+        if($this->length > 0){
+            $value = array_pop($this->container);
+            $this->length--;
+        }
 
         //ksort($this->container);
         return $value;
     }
 
-
+    /**
+     * Removes index item by value.
+     * @param  [type] $value [description]
+     * @return bool          [description]
+     */
     public function removeByValue($value) : bool {
         $offset = $this->search($value);
 
@@ -243,11 +259,10 @@ class ArrayList extends \ArrayObject {
     }
 
     /**
-     *
-     * Iterates over the container, returns filtered array.
-     *
-     * @param  callable $callback [description]
-     * @return array              [description]
+     * Provides a filtered list by use of a closure.
+     * @param  callable $callback     [description]
+     * @param  boolean  $applyChanges [description]
+     * @return array                  [description]
      */
     public function filter(callable $callback, bool $applyChanges = false) : array {
 
@@ -262,8 +277,10 @@ class ArrayList extends \ArrayObject {
     }
 
     /**
-     * Iterates over the array
-     * @return array [description]
+     * Maps the list items with provided closure.
+     * @param  callable $callback     [description]
+     * @param  boolean  $applyChanges [description]
+     * @return array                  [description]
      */
     public function map(callable $callback, bool $applyChanges = false) : array {
 
@@ -276,22 +293,45 @@ class ArrayList extends \ArrayObject {
         return $result;
     }
 
+    /**
+     * Searches for value in container.
+     * @param  [type] $needle [description]
+     * @return [type]         [description]
+     */
     public function search($needle) {
         return array_search($needle, $this->container);
     }
 
+    /**
+     * [offsetExists description]
+     * @param  [type] $offset [description]
+     * @return bool           [description]
+     */
     public function offsetExists ( $offset ) : bool {
         return ($offset >= 0 && $offset < $this->length);
     }
 
+    /**
+     * [offsetGet description]
+     * @param [type] $offset [description]
+     */
     public function offsetGet ( $offset ) {
         return $this->get($offset);
     }
 
+    /**
+     * [offsetSet description]
+     * @param [type] $offset [description]
+     * @param [type] $value  [description]
+     */
     public function offsetSet ( $offset , $value ) {
         throw new \NotImplementedException();
     }
 
+    /**
+     * [offsetUnset description]
+     * @param [type] $offset [description]
+     */
     public function offsetUnset ( $offset ) {
         $this->remove($offset);
     }

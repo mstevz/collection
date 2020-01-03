@@ -68,6 +68,21 @@ class ArrayListTest extends TestCase {
         );
     }
 
+    public function getMockArrayList(){
+        return array(
+            array(
+                'string',
+                array(
+                    "john doe",
+                    "asta",
+                    "luffy",
+                    "son goku",
+                    "nami"
+                )
+            )
+        );
+    }
+
     /**
      * [testAddFunction description]
      * @dataProvider getArrayTypesProvider
@@ -91,7 +106,7 @@ class ArrayListTest extends TestCase {
      * @dataProvider getArrayTypesExamplesProvider
      * @depends testCanRestrictTypeOfArrayItemContent
      */
-    public function testAddFunctionWithCasting(string $type, $value){
+    public function testCanAddWithCasting(string $type, $value){
         $list = new ArrayList($type);
         $list->add($value);
         $this->assertTrue(true);
@@ -102,7 +117,7 @@ class ArrayListTest extends TestCase {
      * @dataProvider getArrayTypesExampleWithoutCastProvider
      * @depends testCanRestrictTypeOfArrayItemContent
      */
-    public function testAddFunctionWithoutCasting(string $type, $value){
+    public function testCanAddWithoutCasting(string $type, $value){
         $list = new ArrayList($type, false);
         $list->add($value);
         $this->assertTrue(true);
@@ -113,7 +128,7 @@ class ArrayListTest extends TestCase {
      * @dataProvider getIncorrectArrayTypeExampleProvider
      * @depends testCanRestrictTypeOfArrayItemContent
      */
-    public function testAddFunctionWithCastingCanThrowException(string $type, $value){
+    public function testCanThrowExceptionWithCastingWhenAdding(string $type, $value){
         $this->expectException(\Exception::class);
 
         $list = new ArrayList($type);
@@ -125,12 +140,109 @@ class ArrayListTest extends TestCase {
      * @dataProvider getIncorrectArrayTypeExampleProvider
      * @depends testCanRestrictTypeOfArrayItemContent
      */
-    public function testAddFunctionWithoutCastingCanThrowException(string $type, $value){
+    public function testCanThrowExceptionWithoutCastingWhenAdding(string $type, $value){
         $this->expectException(\Exception::class);
 
         $list = new ArrayList($type, false);
         $list->add($value);
     }
+
+    /**
+     * [testCanGetLength description]
+     * @depends testCanRestrictTypeOfArrayItemContent
+     * @return [type] [description]
+     */
+    public function testCanGetLength() {
+        $list = new ArrayList();
+        $this->assertEquals(0, $list->getLength());
+        $list->add('john');
+        $this->assertEquals(1, $list->getLength());
+    }
+
+    /**
+     * [testCanRemoveFirst description]
+     * @dataProvider getMockArrayList
+     * @param  string $type   [description]
+     * @param  [type] $values [description]
+     * @return [type]         [description]
+     */
+    public function testCanRemoveFirst(string $type, $values){
+        $list = new ArrayList($type);
+        $needle = 'myFirst';
+
+        $list->add($needle);
+
+        foreach($values as $value){
+            $list->add($value);
+        }
+
+        $previousLength = $list->getLength();
+
+        $this->assertEquals($needle, $list->removeFirst());
+        $this->assertEquals($previousLength - 1, $list->getLength());
+
+    }
+
+    /**
+     * [testCanRemoveLast description]
+     * @dataProvider getMockArrayList
+     * @param  string $type   [description]
+     * @param  [type] $values [description]
+     * @return [type]         [description]
+     */
+    public function testCanRemoveLast(string $type, $values){
+        $list = new ArrayList($type);
+        $needle = 'myLast';
+
+        foreach($values as $value){
+            $list->add($value);
+        }
+
+        $list->add($needle);
+
+        $previousLength = $list->getLength();
+
+        $this->assertEquals($needle, $list->removeLast());
+        $this->assertEquals($previousLength - 1, $list->getLength());
+    }
+
+    /**
+     * [testCanRemoveByValue description]
+     * @dataProvider getMockArrayList
+     * @param  string $type   [description]
+     * @param  [type] $values [description]
+     * @return [type]         [description]
+     */
+    public function testCanRemoveByValue(string $type, $values){
+        $list = new ArrayList($type);
+
+        foreach($values as $value){
+            $list->add($value);
+        }
+
+        $this->assertTrue($list->removeByValue('son goku'));
+    }
+
+    /**
+     * [testCanThrowExceptionWhenRemovingByValue description]
+     * @dataProvider getMockArrayList
+     * @param  string $type   [description]
+     * @param  [type] $values [description]
+     * @return [type]         [description]
+     */
+    public function testCanThrowExceptionWhenRemovingByValue(string $type, $values){
+        $this->expectException(\Exception::class);
+        $list = new ArrayList($type);
+
+        foreach($values as $value){
+            $list->add($value);
+        }
+
+        $this->assertTrue($list->removeByValue('this value clearly does not exist qahw1290837hqowiduhaw07d'));
+    }
+
+
+
 }
 
 ?>

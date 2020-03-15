@@ -2,11 +2,18 @@
 
 namespace mstevz\collection;
 
+use \ArrayObject;
+use \JsonSerializable;
+use \Psr\Container\ContainerInterface as IContainer;
+
 /**
- * @author Miguel Esteves <mstevz@mail.com>
+ *
+ * @author Miguel Esteves <dev.mstevz@mail.com>
  * @license https://github.com/mstevz/collection/blob/master/LICENSE
+ *
+ * @implements IContainer
  */
-class Dictionary extends \ArrayObject implements \JsonSerializable {
+class Dictionary extends ArrayObject implements IContainer, JsonSerializable {
 
     /**
     * Property that contains the index position of each associative key.
@@ -129,6 +136,7 @@ class Dictionary extends \ArrayObject implements \JsonSerializable {
     * @return mixed
     */
     public function get($offset){
+        
         if(!$this->offsetExists($offset)){
             throw new \OutOfBoundsException('Invalid offset.');
         }
@@ -174,6 +182,15 @@ class Dictionary extends \ArrayObject implements \JsonSerializable {
      */
     public function keyOf(int $index) : ?string {
         return $this->containerKeys[$index] ?? null;
+    }
+
+    /**
+     * [has description]
+     * @param string|int $offset
+     * @return boolean
+     */
+    public function has($offset) {
+        return $this->offsetExists($offset);
     }
 
     /**

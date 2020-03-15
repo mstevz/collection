@@ -2,7 +2,8 @@
     "name": "mstevz/collection",
     "description": "Allows the creation of a collection providing an easier data manipulation.",
     "require": {
-        "php": "^7.0"
+        "php": "^7.0",
+        "psr/container": "^1.0"
     },
     "license": "MIT",
     "authors": [

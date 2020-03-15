@@ -2,12 +2,15 @@
 
 namespace mstevz\collection;
 
+use \ArrayObject;
+use \Psr\Container\ContainerInterface as IContainer;
+
 /**
  *
- * @author Miguel Esteves <mstevz@mail.com>
+ * @author Miguel Esteves <dev.mstevz@mail.com>
  * @license https://github.com/mstevz/collection/blob/master/LICENSE
  */
-class ArrayList extends \ArrayObject {
+class ArrayList extends ArrayObject implements IContainer {
 
     /**
      * Item values.
@@ -188,7 +191,11 @@ class ArrayList extends \ArrayObject {
      * @throws \OutOfBoundsException
      * @return mixed
      */
-    public function get(int $offset){
+    public function get($offset){
+
+        if(!is_int($offset)){
+            throw new \InvalidArgumentException('Argument "$offset" must be of type an integer.');
+        }
 
         if(!isset($this->container[$offset])){
             throw new \OutOfBoundsException();
@@ -202,7 +209,11 @@ class ArrayList extends \ArrayObject {
      * @param  int    $offset
      * @throws \OutOfBoundsException
      */
-    public function remove(int $offset) : bool {
+    public function remove($offset) : bool {
+
+        if(!is_int($offset)){
+            throw new \InvalidArgumentException('Argument "$offset" must be of type an integer.');
+        }
 
         if(!($offset >= 0 && $offset < $this->length)){
             throw new \OutOfBoundsException();
@@ -302,6 +313,9 @@ class ArrayList extends \ArrayObject {
         return array_search($needle, $this->container);
     }
 
+    public function has($offset) {
+        return $this->offsetExists($offset);
+    }
     /**
      * [offsetExists description]
      * @param  [type] $offset [description]

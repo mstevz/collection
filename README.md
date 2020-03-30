@@ -44,7 +44,7 @@ If you find any bug please create a <b>new issue</b> and give you as <b>many det
 Please let me know by posting [here](https://github.com/mstevz/collection/issues).
 
 ## <div align="center">_License_</div>
-This repository is licensed under: [MIT License](https://github.com/mstevz/collection/blob/master/LICENSE).
+This repository is licensed under: [MIT License](https://github.com/mstevz/collection/blob/1.x/LICENSE).
 
 If you are to use this project, please let me know and read the [license](https://github.com/mstevz/collection/blob/master/LICENSE).
 Thank you.

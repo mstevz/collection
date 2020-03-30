@@ -270,7 +270,7 @@ class ArrayList extends ArrayObject implements IContainer {
     }
 
     /**
-     * Provides a filtered list by use of a closure.
+     * Provides a filtered array by use of a closure.
      * @param  callable $callback     [description]
      * @param  boolean  $applyChanges [description]
      * @return array                  [description]
@@ -307,7 +307,7 @@ class ArrayList extends ArrayObject implements IContainer {
     /**
      * Searches for value in container.
      * @param  [type] $needle [description]
-     * @return [type]         [description]
+     * @return int    Returns the offset of the searched value.
      */
     public function search($needle) {
         return array_search($needle, $this->container);

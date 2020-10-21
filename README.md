@@ -1,5 +1,4 @@
-# Collection [![Build Status](https://travis-ci.org/mstevz/collection.svg?branch=development)](https://travis-ci.org/mstevz/collection)
-     
+# Collection | [![Build Status](https://travis-ci.org/mstevz/collection.svg?branch=development)](https://travis-ci.org/mstevz/collection) ![GitHub](https://img.shields.io/github/license/mstevz/collection) ![Packagist Version](https://img.shields.io/packagist/v/mstevz/collection?label=latest%20version)
 
     
 ## <div align="center">_Description_</div>
